@@ -19,87 +19,110 @@
 
 ofxAbletonLink::ofxAbletonLink()
     : link(nullptr),
-    quantum_(4.0){
+    quantum_(4.0) {
 }
 
-ofxAbletonLink::~ofxAbletonLink(){
-    if(link != nullptr){
+ofxAbletonLink::~ofxAbletonLink() {
+    if (link != nullptr) {
         link->enable(false);
         delete link;
     }
 }
 
-void ofxAbletonLink::setup(double tempo){
-    if(link != nullptr){
+void ofxAbletonLink::setup(double tempo) {
+    if (link != nullptr) {
         link->enable(false);
         delete link;
     }
     link = new ableton::Link(tempo);
-    link->setNumPeersCallback([this](std::size_t /*peers*/){
+    link->setNumPeersCallback([this](std::size_t /*peers*/) {
         // nop
     });
-    link->setTempoCallback([this](const double /*bpm*/){
+    link->setTempoCallback([this](const double /*bpm*/) {
         // nop
     });
     link->enable(true);
 }
 
-void ofxAbletonLink::setTempo(double bpm){
-    if (link == nullptr){
+void ofxAbletonLink::setTempo(double bpm) {
+    if (link == nullptr) {
         return;
     }
-    auto timeline = link->captureAppTimeline();
     const auto time = link->clock().micros();
-    timeline.setTempo(bpm, time);
-    link->commitAppTimeline(timeline);
-    
+    auto state = link->captureAppSessionState();
+    state.setTempo(bpm, time);
+    link->commitAppSessionState(state);
 }
 
-double ofxAbletonLink::tempo(){
-    if(link == nullptr){
+double ofxAbletonLink::tempo() {
+    if (link == nullptr) {
         return 0.0;
     }
-    return link->captureAppTimeline().tempo();
+    return link->captureAppSessionState().tempo();
 }
 
-void ofxAbletonLink::setQuantum(double quantum){
-    this->quantum_ = quantum;
+void ofxAbletonLink::setQuantum(double quantum) {
+    quantum_ = quantum;
 }
 
-double ofxAbletonLink::quantum(){
+double ofxAbletonLink::quantum() {
     return quantum_;
 }
 
-bool ofxAbletonLink::isEnabled() const{
-    if(link == nullptr){
+bool ofxAbletonLink::isEnabled() const {
+    if (link == nullptr) {
         return false;
     }
     return link->isEnabled();
 }
 
-void ofxAbletonLink::enable(bool bEnable){
-    if(link == nullptr){
+void ofxAbletonLink::enable(bool bEnable) {
+    if (link == nullptr) {
         return;
     }
     link->enable(bEnable);
 }
 
-std::size_t ofxAbletonLink::numPeers(){
-    if(link == nullptr){
+bool ofxAbletonLink::isStartStopSyncEnabled() const {
+    if (link == nullptr) {
+        return false;
+    }
+    return link->isStartStopSyncEnabled();
+}
+
+void ofxAbletonLink::enableStartStopSync(bool bEnable) {
+    if (link == nullptr) {
+        return;
+    }
+    link->enableStartStopSync(bEnable);
+}
+
+void ofxAbletonLink::setIsPlaying(bool isPlaying) {
+    if (link == nullptr) {
+        return;
+    }
+    const auto time = link->clock().micros();
+    auto state = link->captureAppSessionState();
+    state.setIsPlaying(isPlaying, time);
+    link->commitAppSessionState(state);
+}
+
+std::size_t ofxAbletonLink::numPeers() {
+    if (link == nullptr) {
         return 0;
     }
     return link->numPeers();
 }
 
-ofxAbletonLink::Status ofxAbletonLink::update(){
+ofxAbletonLink::Status ofxAbletonLink::update() {
     Status status;
-    if(link == nullptr){
+    if (link == nullptr) {
         return status;
     }
     const auto time = link->clock().micros();
-    auto timeline = link->captureAppTimeline();
-    status.beat  = timeline.beatAtTime(time, quantum_);
-    status.phase = timeline.phaseAtTime(time, quantum_);
+    auto state = link->captureAppSessionState();
+    status.beat     = state.beatAtTime(time, quantum_);
+    status.phase    = state.phaseAtTime(time, quantum_);
+    status.isPlaying = state.isPlaying();
     return status;
 }
-

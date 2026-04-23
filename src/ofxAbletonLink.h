@@ -26,6 +26,10 @@
 #define LINK_PLATFORM_WINDOWS 1
 #endif
 
+#ifndef ASIO_STANDALONE
+#define ASIO_STANDALONE
+#endif
+
 #include "Link.hpp"
 
 #include <algorithm>
@@ -34,38 +38,44 @@
 #include <iostream>
 #include <thread>
 
-class ofxAbletonLink{
-    public:
-        struct Status{
-            double beat;
-            double phase;
-            Status() : beat(0.0), phase(0.0){}
-        };
-        ofxAbletonLink();
-        ~ofxAbletonLink();
+class ofxAbletonLink {
+public:
+    struct Status {
+        double beat;
+        double phase;
+        bool isPlaying;
+        Status() : beat(0.0), phase(0.0), isPlaying(false) {}
+    };
 
-        ofxAbletonLink(const ofxAbletonLink&) = delete;
-        ofxAbletonLink& operator=(const ableton::Link&) = delete;
-        ofxAbletonLink(ofxAbletonLink&&) = delete;
-        ofxAbletonLink& operator=(ofxAbletonLink&&) = delete;
+    ofxAbletonLink();
+    ~ofxAbletonLink();
 
-        void setup(double bpm);
+    ofxAbletonLink(const ofxAbletonLink&) = delete;
+    ofxAbletonLink& operator=(const ofxAbletonLink&) = delete;
+    ofxAbletonLink(ofxAbletonLink&&) = delete;
+    ofxAbletonLink& operator=(ofxAbletonLink&&) = delete;
 
-        void setTempo(double bpm);
-        double tempo();
+    void setup(double bpm);
 
-        void setQuantum(double quantum);
-        double quantum();
+    void setTempo(double bpm);
+    double tempo();
 
-        bool isEnabled() const;
-        void enable(bool bEnable);
+    void setQuantum(double quantum);
+    double quantum();
 
-        std::size_t numPeers();
+    bool isEnabled() const;
+    void enable(bool bEnable);
 
-        Status update();
+    bool isStartStopSyncEnabled() const;
+    void enableStartStopSync(bool bEnable);
 
-    private:
-        ableton::Link* link;
-        double quantum_;
+    void setIsPlaying(bool isPlaying);
+
+    std::size_t numPeers();
+
+    Status update();
+
+private:
+    ableton::Link* link;
+    double quantum_;
 };
-

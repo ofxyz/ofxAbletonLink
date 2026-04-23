@@ -1,29 +1,74 @@
 # ofxAbletonLink
 
-ofxAbletonLink is an [Ableton Link](https://github.com/Ableton/link) addon for [openFrameworks](http://openframeworks.cc)
+ofxAbletonLink is an [Ableton Link](https://github.com/Ableton/link) addon for [openFrameworks](http://openframeworks.cc).
+
+Ableton Link is a technology that keeps devices in time over a local network. This addon wraps the Link SDK, exposing beat, phase, tempo, peer count and transport start/stop state to your oF app.
+
+## Bundled Link SDK
+
+This addon bundles [Ableton Link](https://github.com/Ableton/link) as a submodule at `libs/link`.  
+Current bundled version: **Link-3.1.5**
+
+## Platform support
+
+| Platform | Status |
+|---|---|
+| Windows (msys2 / VS) | Supported |
+| Linux 64-bit | Supported |
+| Linux ARMv6/ARMv7 (Raspberry Pi) | Supported |
+| macOS | Supported |
 
 ## Installation
 
-To install ofxAbletonLink, move the ofxAbletonLink folder to your `of/addons/` folder.
-A compiler that supports C++ 11 is required.
+Move the `ofxAbletonLink` folder into your `of/addons/` directory.
 
-ofxAbletonLink relies on `link`, `asio-standalone` and `catch` as submodules. After checking out the
-main repositories and change the current directory into `ofxabletonlink`, those submodules have to be loaded using
+A C++11 (or later) compiler is required.
+
+After cloning, initialise the Link submodule:
+
 ```
 git submodule update --init --recursive
 ```
 
+## API
+
+```cpp
+ofxAbletonLink link;
+
+// setup with initial BPM
+link.setup(120.0);
+
+// in update()
+auto status = link.update();
+// status.beat      – beat position (continuous, fractional)
+// status.phase     – phase within quantum [0, quantum)
+// status.isPlaying – transport playing state
+
+// tempo
+link.setTempo(128.0);
+double bpm = link.tempo();
+
+// quantum (beats per bar / loop length)
+link.setQuantum(4.0);
+
+// transport start/stop sync (Link 3.x feature)
+link.enableStartStopSync(true);
+link.setIsPlaying(true);
+
+// peers
+std::size_t n = link.numPeers();
+
+// enable/disable
+link.enable(false);
+```
+
 ## Examples
 
-- `example-basic`: The simplest demo. This demo acts with other Ableton Link applications.
-- `example-animation`: A sprite animation speed control demo. This demo acts with other Ableton Link applications. (Thank you [Irasutoya](http://www.irasutoya.com/))
+- `example-basic` — minimal tempo sync demo, interoperates with Ableton Live and other Link apps.
+- `example-animation` — sprite animation speed driven by Link beat.
 
 ## Demo
 
-This gif shows the state of tempo synchronization between our `example-basic` and  Ableton's `QLinkHut`.
+This gif shows tempo synchronisation between `example-basic` and Ableton's `QLinkHut`.
 
-<img src="https://i.gyazo.com/95d1fde2180d1f6b1156bfe96196c1c5.gif" alt="https://gyazo.com/95d1fde2180d1f6b1156bfe96196c1c5" width="600">
-
-## Note
-
-This addon was tested on macOS Sierra only.
+<img src="https://i.gyazo.com/95d1fde2180d1f6b1156bfe96196c1c5.gif" alt="ofxAbletonLink demo" width="600">
