@@ -1,5 +1,7 @@
 # ofxAbletonLink
 
+> Version 4
+
 ofxAbletonLink is an [Ableton Link](https://github.com/Ableton/link) addon for [openFrameworks](http://openframeworks.cc).
 
 Ableton Link is a technology that keeps devices in time over a local network. This addon wraps the Link SDK, exposing beat, phase, tempo, peer count and transport start/stop state to your oF app.
