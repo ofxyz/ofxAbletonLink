@@ -1,6 +1,26 @@
 # ofxAbletonLink
 
-ofxAbletonLink is an [Ableton Link](https://github.com/Ableton/link) addon for [openFrameworks](http://openframeworks.cc)
+> Version 4
+
+ofxAbletonLink is an [Ableton Link](https://github.com/Ableton/link) addon for [openFrameworks](http://openframeworks.cc).
+
+Ableton Link is a technology that keeps devices in time over a local network. This addon wraps the Link SDK, exposing beat, phase, tempo, peer count and transport start/stop state to your oF app.
+
+## Bundled Link SDK
+
+This addon bundles [Ableton Link](https://github.com/Ableton/link) as a submodule at `libs/link`.  
+Current bundled version: **Link-3.1.5**
+
+[Asio](https://github.com/chriskohlhoff/asio) 1.36.0 (header-only, standalone mode) is vendored at `libs/asio` so no nested submodule checkout is required to build.
+
+## Platform support
+
+| Platform | Status |
+|---|---|
+| Windows (msys2 / VS) | Supported |
+| Linux 64-bit | Supported |
+| Linux ARMv6/ARMv7 (Raspberry Pi) | Supported |
+| macOS | Supported |
 
 ## Installation
 
@@ -10,7 +30,7 @@ A compiler that supports C++ 11 is required.
 ofxAbletonLink relies on `link`, `asio-standalone` and `catch` as submodules. After checking out the
 main repositories and change the current directory into `ofxabletonlink`, those submodules have to be loaded using
 ```
-git submodule update --init --recursive
+git submodule update --init
 ```
 
 ## Examples
