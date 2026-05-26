@@ -84,6 +84,22 @@ void ofxAbletonLink::enable(bool bEnable){
     link->enable(bEnable);
 }
 
+void ofxAbletonLink::enableStartStopSync(bool bEnable){
+    startStopSyncEnabled_ = bEnable;
+}
+
+bool ofxAbletonLink::isStartStopSyncEnabled() const{
+    return startStopSyncEnabled_;
+}
+
+void ofxAbletonLink::setIsPlaying(bool bPlaying){
+    isPlaying_ = bPlaying;
+}
+
+bool ofxAbletonLink::isPlaying() const{
+    return isPlaying_;
+}
+
 std::size_t ofxAbletonLink::numPeers(){
     if(link == nullptr){
         return 0;
@@ -98,8 +114,9 @@ ofxAbletonLink::Status ofxAbletonLink::update(){
     }
     const auto time = link->clock().micros();
     auto timeline = link->captureAppTimeline();
-    status.beat  = timeline.beatAtTime(time, quantum_);
-    status.phase = timeline.phaseAtTime(time, quantum_);
+    status.beat      = timeline.beatAtTime(time, quantum_);
+    status.phase     = timeline.phaseAtTime(time, quantum_);
+    status.isPlaying = isPlaying_;
     return status;
 }
 

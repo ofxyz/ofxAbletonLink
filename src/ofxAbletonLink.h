@@ -39,7 +39,8 @@ class ofxAbletonLink{
         struct Status{
             double beat;
             double phase;
-            Status() : beat(0.0), phase(0.0){}
+            bool   isPlaying;
+            Status() : beat(0.0), phase(0.0), isPlaying(false){}
         };
         ofxAbletonLink();
         ~ofxAbletonLink();
@@ -60,6 +61,12 @@ class ofxAbletonLink{
         bool isEnabled() const;
         void enable(bool bEnable);
 
+        void enableStartStopSync(bool bEnable);
+        bool isStartStopSyncEnabled() const;
+
+        void setIsPlaying(bool bPlaying);
+        bool isPlaying() const;
+
         std::size_t numPeers();
 
         Status update();
@@ -67,5 +74,7 @@ class ofxAbletonLink{
     private:
         ableton::Link* link;
         double quantum_;
+        bool   startStopSyncEnabled_ {false};
+        bool   isPlaying_            {false};
 };
 
