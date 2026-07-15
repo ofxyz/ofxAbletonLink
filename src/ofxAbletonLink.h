@@ -18,6 +18,10 @@
 #define LINK_PLATFORM_WINDOWS 1
 #endif
 
+#ifndef ASIO_STANDALONE
+#define ASIO_STANDALONE
+#endif
+
 #include "Link.hpp"
 
 #include <algorithm>
