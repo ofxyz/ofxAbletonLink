@@ -11,6 +11,8 @@ Ableton Link is a technology that keeps devices in time over a local network. Th
 This addon bundles [Ableton Link](https://github.com/Ableton/link) as a submodule at `libs/link`.  
 Current bundled version: **Link-3.1.5**
 
+[Asio](https://github.com/chriskohlhoff/asio) 1.36.0 (header-only, standalone mode) is vendored at `libs/asio` so no nested submodule checkout is required to build.
+
 ## Platform support
 
 | Platform | Status |
@@ -29,7 +31,7 @@ A C++11 (or later) compiler is required.
 After cloning, initialise the Link submodule:
 
 ```
-git submodule update --init --recursive
+git submodule update --init
 ```
 
 ## API
